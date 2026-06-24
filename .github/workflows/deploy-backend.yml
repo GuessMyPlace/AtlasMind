@@ -1,23 +1,53 @@
-name: Deploy Backend to HF Space
+name: Sync Backend → HuggingFace Space
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
     paths:
-      - 'backend/**'
+      - "backend/**"
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  sync-to-hf-space:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install huggingface_hub
         run: pip install huggingface_hub
-        
-      - name: Deploy to Space
+
+      - name: Upload backend/ to HF Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          huggingface-cli login --token $HF_TOKEN
-          huggingface-cli upload atlasmind-org/backend ./backend / --repo-type=space
+          python - <<'PYEOF'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+
+          repo_id = "Rafs-an09002/AtlasMind"
+          local_dir = "backend"
+
+          print(f"Uploading {local_dir}/ to {repo_id} ...")
+
+          api.upload_folder(
+              folder_path=local_dir,
+              repo_id=repo_id,
+              repo_type="space",
+              commit_message=f"sync: backend from GitHub Actions",
+              ignore_patterns=["__pycache__", "*.pyc", ".env"],
+          )
+
+          print("Done!")
+          PYEOF
