@@ -1,0 +1,6 @@
+{
+  "name": "AtlasMind",
+  "description": "An AI-powered geographic data generation and management platform for GuessMyPlace.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

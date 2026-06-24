@@ -1,0 +1,23 @@
+name: Deploy Backend to HF Space
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+        
+      - name: Deploy to Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          huggingface-cli login --token $HF_TOKEN
+          huggingface-cli upload atlasmind-org/backend ./backend / --repo-type=space
