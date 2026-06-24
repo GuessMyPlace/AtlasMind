@@ -36,7 +36,7 @@ jobs:
 
           api = HfApi(token=os.environ["HF_TOKEN"])
 
-          repo_id = "Rafs-an09002/AtlasMind"
+          repo_id = "Rafs-an09002/AtlasMind-Backend"
           local_dir = "backend"
 
           print(f"Uploading {local_dir}/ to {repo_id} ...")
