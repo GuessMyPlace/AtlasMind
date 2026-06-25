@@ -1,91 +1,64 @@
-# AtlasMind 🌍✨
-
-> **AI-Powered Geographic Data Generation & Management Platform for GuessMyPlace**
-
-AtlasMind is a highly polished, full-stack enterprise dashboard and geographic data pipeline. It enables developers and administrators to model, generate, validate, and manage global location records, progressive gameplay clues, and trivia questions powered by Gemini models for the *GuessMyPlace* geographic guessing game.
-
----
-
-## 🎨 Visual Preview & Design Philosophy
-
-AtlasMind is built with a custom-crafted **Deep Cosmic Slate** visual identity, utilizing generous negative space, crisp "Space Grotesk" displays paired with "JetBrains Mono" metrics, and fluid transition animations powered by `motion`.
-
-The interface is entirely responsive, lightweight, and focused on high data density without layout clutter.
-
----
-
-## 🚀 Key Features
-
-### 📊 1. Interactive Operations Dashboard
-* **Dynamic Analytics**: Real-time visualization of database records, place distribution (Landmarks, Cities, Countries), and historical token usage using custom Recharts layers.
-* **Token & Quota Telemetry**: Live tracker for Gemini API requests and consumption logs.
-* **API Health Monitor**: Live diagnostics showing server uptime, background worker synchronization, and API connectivity.
-
-### 🧠 2. Intelligent AI Generation Engine (`Generate`)
-* **Smart Duplicate Checker**: Pre-validates location lists to prevent duplicate database entries.
-* **Gemini-Powered Generation**: Generates comprehensive location dossiers including search tags, progressive difficulty clues, exact bounding coordinate estimations, and custom multiple-choice trivia.
-* **Bulk Processing**: Schedule instant or delayed queues to process batch location requests.
-
-### 🗺️ 3. Expansion Roadmap (`Roadmap`)
-* **Phase-Based Expansion**: Group regions, countries, and major cities into strategic milestones.
-* **Cost & API Quota Estimates**: Displays real-time estimated resource cost per phase before starting generation runs.
-* **One-Click Progression**: Automated integration to start generating geographic details directly from roadmap items.
-
-### 🛠️ 4. Data Explorer & Validation Queue
-* **Live Database Querying**: Live search and deletion of custom-generated geographical locations.
-* **Linked Trivia Inspection**: Directly review, verify, and clean up generated clues and multiple-choice options.
-* **Reported Queue Resolution**: Manage manual requests and unresolved missing places reported by actual players in *GuessMyPlace*.
-
-### 💼 5. Task Scheduler & Job Manager (`Jobs`)
-* **Thread Controller**: Complete life cycle control over running tasks (Pause, Resume, Cancel).
-* **Metrics Tracker**: Live bar showing process duration, error-handling rates, and exportable JSON outputs.
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technologies Used |
-|---|---|
-| **Frontend** | React 19 (Hooks), Vite 6, Tailwind CSS v4, Framer Motion (`motion/react`) |
-| **Backend** | Node.js, Express, TypeScript (`tsx`), ESBuild |
-| **Data Viz** | Recharts, Lucide Icons |
-| **AI SDK** | `@google/genai` TypeScript SDK (Gemini Integration) |
-| **Storage** | Dynamic file-backed local database with persistent seed structures |
-
----
-
-## 📂 Project Structure
-
-```bash
-├── backend/                # Server-side business logic and controllers
-├── src/
-│   ├── api/                # API client modules proxying to backend
-│   ├── components/         # Reusable dashboard widgets and layouts
-│   │   ├── layout/         # Header, Navigation, and Sidebar layouts
-│   │   ├── ui/             # Core styled micro-elements (Buttons, Progress)
-│   │   ├── Dashboard.tsx   # Visual statistics charts and logs
-│   │   ├── DataExplorer.tsx# Database query and item inspector
-│   │   └── QueueView.tsx   # Missing ticket resolution panel
-│   ├── hooks/              # Custom application React hooks
-│   ├── pages/              # Primary route views (Dashboard, Generate, Roadmap, Settings)
-│   ├── stores/             # Client-side state engines (Zustand)
-│   ├── types/              # Domain-specific TypeScript declarations
-│   ├── database.ts         # Mock seed database initializer
-│   ├── generator.ts        # Geographic record automation logic
-│   ├── index.css           # Global custom theme and CSS variables
-│   ├── main.tsx            # Main application bootstrapper
-│   └── App.tsx             # Root routing coordinator
-├── server.ts               # Full-stack Express server entrypoint
-├── package.json            # Scripts, workspace declarations, and packages
-├── tsconfig.json           # Type definitions compiler specifications
-└── vite.config.ts          # Build plugin chains and proxy configurations
-```
-
----
-
-
-
----
-
-## 🛡️ License
-Distributed under the GPL-v3 License. Developed for **GuessMyPlace** operations.
+# 🧠 AtlasMind
+ 
+**AI-powered data generation platform for GuessMyPlace**
+ 
+AtlasMind generates structured geographic place data using Gemini 2.5 Pro
+and stores it in Supabase for use by [GuessMyPlace](https://guessmyplace.vercel.app).
+ 
+## What It Does
+ 
+- Generates place data (description, attributes, fun facts, emoji) via Gemini 2.5 Pro
+- Auto-generates fun Akinator-style yes/no questions per place
+- Tracks Gemini API quota and pauses gracefully when exceeded
+- Resumes automatically when quota resets at midnight UTC
+- Follows a structured roadmap: Bangladesh first, then world data
+- Accepts unknown places reported by GuessMyPlace players
+## Tech Stack
+ 
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + TypeScript + Vite + TailwindCSS |
+| Backend | FastAPI + Python 3.11 |
+| Database | Supabase (shared with GuessMyPlace) |
+| Queue | Redis (Upstash) |
+| AI | Gemini 2.5 Pro |
+| Embeddings | MiniLM-L6-v2 (sentence-transformers) |
+| Frontend Deploy | Vercel |
+| Backend Deploy | HuggingFace Spaces |
+ 
+## Setup
+ 
+### 1. Database migrations
+Run in Supabase SQL Editor (same project as GuessMyPlace):
+supabase/migrations/003_atlasmind_tables.sql
+ 
+### 2. Backend
+cd backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # fill in your keys
+python scripts/seed_roadmap.py   # seeds BD roadmap phases
+uvicorn main:app --reload
+ 
+### 3. Frontend
+cd frontend
+npm install
+cp .env.example .env   # set VITE_API_BASE_URL
+npm run dev
+ 
+## Data Generation Roadmap
+ 
+Phase A — Bangladesh: Dhaka Division (cities, landmarks, historical)
+Phase B — Bangladesh: Chittagong Division (cities, natural, landmarks)
+Phase C — Bangladesh: All Other Divisions
+Phase D — Bangladesh: Rivers, Forests, Haors
+Phase E — Bangladesh: Heritage + Liberation War Sites
+Phase F — World: Major Cities
+Phase G — World: Famous Landmarks
+Phase H — World: Natural Wonders
+ 
+## Part of GuessMyPlace
+ 
+- GuessMyPlace game: https://guessmyplace.vercel.app
+- GuessMyPlace repo: https://github.com/GuessMyPlace/guessmy-place
+- Atlas GMP Engine: https://github.com/GuessMyPlace/atlas-gmp-engine
